@@ -10,16 +10,52 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    //povezivanje displaya
+    @IBOutlet weak var display: UILabel!
+    
+    //bool za odredjivanje je li osoba usred upisivanja brojeva
+    var usredTipkanja = false
+    
+    //povezivanje brojeva
+    @IBAction func DodirniTipku(_ sender: UIButton) {
+        
+        let tipka = sender.currentTitle!
+        
+        if usredTipkanja {
+           let trenutniDisplay = display.text!
+            display.text = trenutniDisplay + tipka
+        }else{
+            display.text = tipka
+            usredTipkanja = true
+        }
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    //vrijednost na displayu
+    var displayValue: Double{
+        get {
+            return Double(display.text!)!
+        }
+        set {
+            display.text = String(newValue)
+        }
     }
-
-
+    
+    //kreiranje objekta brain
+    private var brain = CalculatorBrain()
+    
+    //povezivanje operacija
+    @IBAction func operation(_ sender: UIButton) {
+        if usredTipkanja {
+            brain.setOperand(displayValue)
+            usredTipkanja = false
+        }
+        if let matSimbol = sender.currentTitle {
+            brain.performOperation(matSimbol)
+        }
+        if let rezultat = brain.result{
+            displayValue = rezultat
+        }
+    }
+    
 }
 
